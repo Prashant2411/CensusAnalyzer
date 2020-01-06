@@ -1,7 +1,6 @@
 package censusanalyser;
 
 import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -13,8 +12,7 @@ import java.util.stream.StreamSupport;
 public class CensusAnalyser {
     public int loadIndiaCensusData(String csvFilePath) throws CensusAnalyserException {
         try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));){
-
-            CsvToBean<IndiaCensusCSV> csvToBean = (CsvToBean<IndiaCensusCSV>) getCSVFileIterable(reader, IndiaCensusCSV.class);
+            CsvToBean<IndiaCensusCSV> csvToBean = OpenCSVBuilder.getCSVFileIterable(reader, IndiaCensusCSV.class);
             Iterator<IndiaCensusCSV> censusCSVIterator = csvToBean.iterator();
             int namOfEateries = getCount(censusCSVIterator);
             return namOfEateries;
@@ -33,7 +31,7 @@ public class CensusAnalyser {
 
     public int loadIndiaStateCode(String csvFilePath) throws CensusAnalyserException {
         try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));){
-            CsvToBean<CSVStates> csvToBean = (CsvToBean<CSVStates>) getCSVFileIterable(reader, CSVStates.class);
+            CsvToBean<CSVStates> csvToBean = OpenCSVBuilder.getCSVFileIterable(reader, CSVStates.class);
             Iterator<CSVStates> stateCSVIterator = csvToBean.iterator();
             int namOfEateries = getCount(stateCSVIterator);
             return namOfEateries;
@@ -48,21 +46,6 @@ public class CensusAnalyser {
                     CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT);
         }
 
-    }
-
-    private <E> Iterable<E> getCSVFileIterable(Reader reader, Class<E> csvClass) throws CensusAnalyserException {
-        try {
-            CsvToBeanBuilder<E> csvToBeanBuilder = new CsvToBeanBuilder<>(reader);
-            csvToBeanBuilder.withType(csvClass);
-            csvToBeanBuilder.withIgnoreLeadingWhiteSpace(true);
-            return csvToBeanBuilder.build();
-        }  catch (IllegalStateException e) {
-            throw new CensusAnalyserException(e.getMessage(),
-                    CensusAnalyserException.ExceptionType.UNABLE_TO_PARSE);
-        }  catch (RuntimeException e) {
-            throw new CensusAnalyserException(e.getMessage(),
-                    CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT);
-        }
     }
 
     private <E> int getCount(Iterator<E> iterator) {
