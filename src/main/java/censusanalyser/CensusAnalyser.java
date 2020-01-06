@@ -32,5 +32,25 @@ public class CensusAnalyser {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT);
         }
+
+    }
+
+    public int loadIndiaStateCode(String csvFilePath) throws CensusAnalyserException {
+        try {
+            Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
+            CsvToBeanBuilder<CSVStates> csvToBeanBuilder = new CsvToBeanBuilder<>(reader);
+            csvToBeanBuilder.withType(CSVStates.class);
+            csvToBeanBuilder.withIgnoreLeadingWhiteSpace(true);
+            CsvToBean<CSVStates> csvToBean = csvToBeanBuilder.build();
+            Iterator<CSVStates> censusCSVIterator = csvToBean.iterator();
+            Iterable<CSVStates> csvIterable = () -> censusCSVIterator;
+            int namOfEateries = (int) StreamSupport.stream(csvIterable.spliterator(),false).count();
+            System.out.println(namOfEateries);
+            return namOfEateries;
+        } catch (IOException e) {
+            throw new CensusAnalyserException(e.getMessage(),
+                    CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
+        }
+
     }
 }
