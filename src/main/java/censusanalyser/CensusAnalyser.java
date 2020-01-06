@@ -45,7 +45,6 @@ public class CensusAnalyser {
             Iterator<CSVStates> censusCSVIterator = csvToBean.iterator();
             Iterable<CSVStates> csvIterable = () -> censusCSVIterator;
             int namOfEateries = (int) StreamSupport.stream(csvIterable.spliterator(),false).count();
-            System.out.println(namOfEateries);
             return namOfEateries;
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
