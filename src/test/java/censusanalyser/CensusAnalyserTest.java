@@ -115,7 +115,7 @@ public class CensusAnalyserTest {
     public void givenInvalidHeaderInStateCode_shouldReturnsException() {
         try {
             CensusAnalyser censusAnalyser = new CensusAnalyser();
-            censusAnalyser.loadIndiaCensusData(INCORRECT_STATE_CODE_FILE);
+            censusAnalyser.loadIndiaStateCode(INCORRECT_STATE_CODE_FILE);
         } catch (CensusAnalyserException e) {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT,e.type);
         }
