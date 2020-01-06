@@ -42,9 +42,9 @@ public class CensusAnalyser {
             csvToBeanBuilder.withType(CSVStates.class);
             csvToBeanBuilder.withIgnoreLeadingWhiteSpace(true);
             CsvToBean<CSVStates> csvToBean = csvToBeanBuilder.build();
-            Iterator<CSVStates> censusCSVIterator = csvToBean.iterator();
-            Iterable<CSVStates> csvIterable = () -> censusCSVIterator;
-            int namOfEateries = (int) StreamSupport.stream(csvIterable.spliterator(),false).count();
+            Iterator<CSVStates> stateCSVIterator = csvToBean.iterator();
+            Iterable<CSVStates> stateIterable = () -> stateCSVIterator;
+            int namOfEateries = (int) StreamSupport.stream(stateIterable.spliterator(),false).count();
             return namOfEateries;
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
