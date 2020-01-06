@@ -12,11 +12,11 @@ import java.util.stream.StreamSupport;
 
 public class CensusAnalyser {
     public int loadIndiaCensusData(String csvFilePath) throws CensusAnalyserException {
-        try {
-            Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
+        try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));){
+
             CsvToBean<IndiaCensusCSV> csvToBean = (CsvToBean<IndiaCensusCSV>) getCSVFileIterable(reader, IndiaCensusCSV.class);
             Iterator<IndiaCensusCSV> censusCSVIterator = csvToBean.iterator();
-            int namOfEateries = getCount((Iterator<IndiaCensusCSV>) censusCSVIterator);
+            int namOfEateries = getCount(censusCSVIterator);
             return namOfEateries;
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
@@ -32,11 +32,10 @@ public class CensusAnalyser {
     }
 
     public int loadIndiaStateCode(String csvFilePath) throws CensusAnalyserException {
-        try {
-            Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
+        try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));){
             CsvToBean<CSVStates> csvToBean = (CsvToBean<CSVStates>) getCSVFileIterable(reader, CSVStates.class);
             Iterator<CSVStates> stateCSVIterator = csvToBean.iterator();
-            int namOfEateries = getCount((Iterator<CSVStates>) stateCSVIterator);
+            int namOfEateries = getCount(stateCSVIterator);
             return namOfEateries;
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
