@@ -30,7 +30,7 @@ public class CensusAnalyser {
                     CensusAnalyserException.ExceptionType.UNABLE_TO_PARSE);
         } catch (RuntimeException e) {
             throw new CensusAnalyserException(e.getMessage(),
-                    CensusAnalyserException.ExceptionType.INVALID_DELIMITER);
+                    CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT);
         }
     }
 }
