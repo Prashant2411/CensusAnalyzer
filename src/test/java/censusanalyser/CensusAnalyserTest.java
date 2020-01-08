@@ -4,6 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.List;
+
 public class CensusAnalyserTest {
 
     private static final String INDIA_CENSUS_CSV_FILE_PATH = "./src/test/resources/IndiaStateCensusData.csv";
@@ -120,4 +122,48 @@ public class CensusAnalyserTest {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT,e.type);
         }
     }
+
+    @Test
+    public void givenCSVCensus_shouldSort_returnsLastElement() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            List list = censusAnalyser.getSortedCensus(INDIA_CENSUS_CSV_FILE_PATH);
+            Assert.assertTrue(list.get(28).toString().contains("West Bengal"));
+        } catch (CensusAnalyserException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void givenCSVCensus_shouldSort_returnsFirstElement() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            List list = censusAnalyser.getSortedCensus(INDIA_CENSUS_CSV_FILE_PATH);
+            Assert.assertTrue(list.get(0).toString().contains("Andhra Pradesh"));
+        } catch (CensusAnalyserException e) {
+            e.printStackTrace();
+        }
+    }
+
+//    @Test
+//    public void givenCSVState_shouldSort_returnsLastElement() {
+//        try {
+//            CensusAnalyser censusAnalyser = new CensusAnalyser();
+//            List list = censusAnalyser.getSortedState(INDIA_STATE_CODE);
+//            Assert.assertTrue(list.get(37).toString().contains("West Bengal"));
+//        } catch (CensusAnalyserException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    @Test
+//    public void givenCSVState_shouldSort_returnsFirstElement() {
+//        try {
+//            CensusAnalyser censusAnalyser = new CensusAnalyser();
+//            List list = censusAnalyser.getSortedState(INDIA_STATE_CODE);
+//            Assert.assertTrue(list.get(0).toString().contains("Andhra Pradesh"));
+//        } catch (CensusAnalyserException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
