@@ -13,7 +13,7 @@ public class CSVStates {
     public String stateCode;
     @Override
     public String toString() {
-        return "IndiaCensusCSV{" +
+        return "{" +
                 "SrNo='" + srNo + '\'' +
                 ", StateName='" + stateName + '\'' +
                 ", TIN='" + tin + '\'' +

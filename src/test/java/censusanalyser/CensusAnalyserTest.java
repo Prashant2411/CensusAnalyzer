@@ -145,25 +145,29 @@ public class CensusAnalyserTest {
         }
     }
 
-//    @Test
-//    public void givenCSVState_shouldSort_returnsLastElement() {
-//        try {
-//            CensusAnalyser censusAnalyser = new CensusAnalyser();
-//            List list = censusAnalyser.getSortedState(INDIA_STATE_CODE);
-//            Assert.assertTrue(list.get(37).toString().contains("West Bengal"));
-//        } catch (CensusAnalyserException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    @Test
-//    public void givenCSVState_shouldSort_returnsFirstElement() {
-//        try {
-//            CensusAnalyser censusAnalyser = new CensusAnalyser();
-//            List list = censusAnalyser.getSortedState(INDIA_STATE_CODE);
-//            Assert.assertTrue(list.get(0).toString().contains("Andhra Pradesh"));
-//        } catch (CensusAnalyserException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    @Test
+    public void givenCSVState_shouldSort_returnsLastElement() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            List list = censusAnalyser.getSortedState(INDIA_STATE_CODE);
+            Assert.assertTrue(list.get(36).toString().contains("West Bengal"));
+        } catch (CensusAnalyserException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void givenCSVState_shouldSort_returnsFirstElement() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            List list = censusAnalyser.getSortedState(INDIA_STATE_CODE);
+            Assert.assertTrue(list.get(0).toString().contains("Andaman and Nicobar Islands"));
+        } catch (CensusAnalyserException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
 }
