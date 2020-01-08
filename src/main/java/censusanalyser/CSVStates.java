@@ -20,4 +20,20 @@ public class CSVStates {
                 ", StateCode='" + stateCode + '\'' +
                 '}';
     }
+
+    public int getSrNo() {
+        return srNo;
+    }
+
+    public String getStateName() {
+        return stateName;
+    }
+
+    public int getTin() {
+        return tin;
+    }
+
+    public String getStateCode() {
+        return stateCode;
+    }
 }
