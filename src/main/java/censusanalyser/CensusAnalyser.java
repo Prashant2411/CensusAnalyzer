@@ -5,22 +5,24 @@ import csvBuilder.CSVBuilderFactory;
 import csvBuilder.ICSVBuilder;
 import org.json.JSONArray;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static java.nio.file.Files.newBufferedReader;
+
 
 public class CensusAnalyser {
     public int loadIndiaCensusData(String csvFilePath) throws CensusAnalyserException {
-        try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));){
+        try (Reader reader = newBufferedReader(Paths.get(csvFilePath));){
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
-            Iterator<CSVStates> stateCSVIterator = csvBuilder.getCSVFileIterable(reader, IndiaCensusCSV.class);
-            int namOfEateries = getCount(stateCSVIterator);
-            return namOfEateries;
+            List<CSVStates> censusCSVList = csvBuilder.getCSVFileInList(reader, IndiaCensusCSV.class);
+            return censusCSVList.size();
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
@@ -33,18 +35,13 @@ public class CensusAnalyser {
         } catch (CSVBuilderException e) {
             throw new CensusAnalyserException(e.getMessage(),e.type.name());
         }
-        //catch (CSVBuilderException e) {
-//            e.printStackTrace();
-//        }
-
     }
 
     public int loadIndiaStateCode(String csvFilePath) throws CensusAnalyserException {
-        try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath))){
+        try (Reader reader = newBufferedReader(Paths.get(csvFilePath))){
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
-            Iterator<CSVStates> stateCSVIterator = csvBuilder.getCSVFileIterable(reader, CSVStates.class);
-            int namOfEateries = getCount(stateCSVIterator);
-            return namOfEateries;
+            List<CSVStates> stateCSVList = csvBuilder.getCSVFileInList(reader, CSVStates.class);
+            return stateCSVList.size();
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
@@ -61,7 +58,7 @@ public class CensusAnalyser {
     }
 
     public JSONArray getSortedCensus(String csvFilePath) throws CensusAnalyserException {
-        try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath))) {
+        try (Reader reader = newBufferedReader(Paths.get(csvFilePath))) {
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
             Iterator<IndiaCensusCSV> censusCSVIterator = csvBuilder.getCSVFileIterable(reader, IndiaCensusCSV.class);
             List<IndiaCensusCSV> arrayList = new ArrayList();
@@ -88,7 +85,7 @@ public class CensusAnalyser {
     }
 
     public JSONArray getSortedState(String csvFilePath) throws CensusAnalyserException {
-        try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath))) {
+        try (Reader reader = newBufferedReader(Paths.get(csvFilePath))) {
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
             Iterator<CSVStates> stateCSVIterator = csvBuilder.getCSVFileIterable(reader, CSVStates.class);
             List<CSVStates> arrayList = new ArrayList();
@@ -114,9 +111,25 @@ public class CensusAnalyser {
         return null;
     }
 
-    private <E> int getCount(Iterator<E> iterator) {
-        Iterable<E> csvIterable = () -> iterator;
-        int namOfEateries = (int) StreamSupport.stream(csvIterable.spliterator(),false).count();
-        return namOfEateries;
+    public void mapCSV(String csvPath)     {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(csvPath));
+            Map<String, List<String>> map = new TreeMap<>();
+            String line;
+            JSONArray jsonArray = new JSONArray();
+            while ((line = reader.readLine()) != null) {
+                String key = line.split(",")[3];
+                List<String> list = map.get(key);
+                if(list==null) {
+                    list = new LinkedList();
+                    list.add(line);
+                    map.put(key, list);
+                }
+                jsonArray.put(map.get(key));
+            }
+            System.out.println(jsonArray);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
