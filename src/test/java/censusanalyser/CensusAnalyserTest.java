@@ -249,4 +249,10 @@ public class CensusAnalyserTest {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT,e.type);
         }
     }
+//
+//    @Test
+//    public void givenInvalidHeaderStateCode_ToSorting_shouldReturnsException() {
+//        CensusAnalyser censusAnalyser = new CensusAnalyser();
+//        censusAnalyser.mapCSV(INDIA_STATE_CODE);
+//
 }
