@@ -57,7 +57,7 @@ public class CensusAnalyser {
 
     }
 
-    public JSONArray getSortedCensus(String csvFilePath) throws CensusAnalyserException {
+    public JSONArray getSortedIndiaCensusData(String csvFilePath) throws CensusAnalyserException {
         try (Reader reader = newBufferedReader(Paths.get(csvFilePath))) {
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
             List<IndiaCensusCSV> arrayList = csvBuilder.getCSVFileInList(reader, IndiaCensusCSV.class);
@@ -80,7 +80,7 @@ public class CensusAnalyser {
         return null;
     }
 
-    public JSONArray getSortedState(String csvFilePath) throws CensusAnalyserException {
+    public JSONArray getSortedStateCodeData(String csvFilePath) throws CensusAnalyserException {
         try (Reader reader = newBufferedReader(Paths.get(csvFilePath))) {
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
             List<CSVStates> arrayList = csvBuilder.getCSVFileInList(reader, CSVStates.class);
