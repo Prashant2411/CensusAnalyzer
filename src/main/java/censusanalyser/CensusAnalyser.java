@@ -15,13 +15,21 @@ import static java.nio.file.Files.newBufferedReader;
 
 
 public class CensusAnalyser {
+    List<IndianCensusDAO> censusList = null; //For DAO-Data Access Object
     List<IndiaCensusCSV> censusCSVList = null;
     List<CSVStates> stateCSVList = null;
+
+    public CensusAnalyser() {
+        this.censusList = new ArrayList<IndianCensusDAO>();
+    }
+
     public int loadIndiaCensusData(String csvFilePath) throws CensusAnalyserException {
-        try (Reader reader = newBufferedReader(Paths.get(csvFilePath));){
+        try (Reader reader = newBufferedReader(Paths.get(csvFilePath))){
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
             censusCSVList = csvBuilder.getCSVFileInList(reader, IndiaCensusCSV.class);
-            return censusCSVList.size();
+            for (int i=0;i<censusCSVList.size();i++)
+                this.censusList.add(new IndianCensusDAO(censusCSVList.get(i)));
+            return censusList.size();
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
@@ -58,11 +66,11 @@ public class CensusAnalyser {
 
     public String getSortedIndiaCensusData() throws CensusAnalyserException {
         try {
-            if(censusCSVList.size()==0 || censusCSVList == null)
+            if(censusList.size()==0 || censusList == null)
                 throw new CensusAnalyserException("Invalid File",
                         CensusAnalyserException.ExceptionType.NULL_EXCEPTION);
-            censusCSVList = censusCSVList.stream().sorted(Comparator.comparing(IndiaCensusCSV::getState)).collect(Collectors.toList());
-            String censusCodeJson = new Gson().toJson(censusCSVList);
+            censusList = censusList.stream().sorted(Comparator.comparing(IndianCensusDAO::getStateDAO)).collect(Collectors.toList());
+            String censusCodeJson = new Gson().toJson(censusList);
             return censusCodeJson;
         } catch (IllegalStateException e) {
             throw new CensusAnalyserException(e.getMessage(),
