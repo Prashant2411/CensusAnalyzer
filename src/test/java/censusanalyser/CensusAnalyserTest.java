@@ -328,4 +328,29 @@ public class CensusAnalyserTest {
         } catch (CensusAnalyserException e) {
         }
     }
+
+    @Test
+    public void givenCensusCSV_returnLargestState() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            censusAnalyser.loadIndiaCensusData(INDIA_CENSUS_CSV_FILE_PATH);
+            String list = censusAnalyser.getSortedAreaWise();
+            IndiaCensusCSV[] array = new Gson().fromJson(list,IndiaCensusCSV[].class);
+            Assert.assertEquals("Rajasthan",array[0].state);
+        } catch (CensusAnalyserException e) {
+        }
+    }
+
+    @Test
+    public void givenCensusCSV_returnSmallestState() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            censusAnalyser.loadIndiaCensusData(INDIA_CENSUS_CSV_FILE_PATH);
+            String list = censusAnalyser.getSortedAreaWise();
+            System.out.println(list);
+            IndiaCensusCSV[] array = new Gson().fromJson(list,IndiaCensusCSV[].class);
+            Assert.assertEquals("Goa",array[28].state);
+        } catch (CensusAnalyserException e) {
+        }
+    }
 }
