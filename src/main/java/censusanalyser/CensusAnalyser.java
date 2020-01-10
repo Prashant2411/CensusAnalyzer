@@ -17,10 +17,12 @@ import static java.nio.file.Files.newBufferedReader;
 public class CensusAnalyser {
     List<IndianCensusDAO> censusList = null; //For DAO-Data Access Object
     List<IndiaCensusCSV> censusCSVList = null;
+    List<CSVStatesDAO> stateCodeList = null; //For DAO-Data Access Object
     List<CSVStates> stateCSVList = null;
 
     public CensusAnalyser() {
         this.censusList = new ArrayList<IndianCensusDAO>();
+        this.stateCodeList = new ArrayList<CSVStatesDAO>();
     }
 
     public int loadIndiaCensusData(String csvFilePath) throws CensusAnalyserException {
@@ -48,7 +50,9 @@ public class CensusAnalyser {
         try (Reader reader = newBufferedReader(Paths.get(csvFilePath))){
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
             stateCSVList = csvBuilder.getCSVFileInList(reader, CSVStates.class);
-            return stateCSVList.size();
+            for (int i=0;i<stateCSVList.size();i++)
+                this.stateCodeList.add(new CSVStatesDAO(stateCSVList.get(i)));
+            return stateCodeList.size();
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
@@ -83,11 +87,11 @@ public class CensusAnalyser {
 
     public String getSortedStateCodeData() throws CensusAnalyserException {
         try {
-            if(stateCSVList.size()==0 || stateCSVList == null)
+            if(stateCodeList.size()==0 || stateCodeList == null)
                 throw new CensusAnalyserException("Invalid File",
                         CensusAnalyserException.ExceptionType.NULL_EXCEPTION);
-            stateCSVList = stateCSVList.stream().sorted(Comparator.comparing(CSVStates::getStateCode)).collect(Collectors.toList());
-            String stateCodeJson = new Gson().toJson(stateCSVList);
+            stateCodeList = stateCodeList.stream().sorted(Comparator.comparing(CSVStatesDAO::getStateCodeDAO)).collect(Collectors.toList());
+            String stateCodeJson = new Gson().toJson(this.stateCodeList);
             return stateCodeJson;
         } catch (IllegalStateException e) {
             throw new CensusAnalyserException(e.getMessage(),
