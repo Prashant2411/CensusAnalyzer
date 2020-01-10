@@ -280,4 +280,28 @@ public class CensusAnalyserTest {
         }
 
     }
+
+    @Test
+    public void givenCensusCSV_returnSortedInPopulationFormat() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            censusAnalyser.loadIndiaCensusData(INDIA_CENSUS_CSV_FILE_PATH);
+            String list = censusAnalyser.getMostPopulatedState();
+            IndiaCensusCSV[] array = new Gson().fromJson(list,IndiaCensusCSV[].class);
+            Assert.assertEquals("Uttar Pradesh",array[0].state);
+        } catch (CensusAnalyserException e) {
+        }
+    }
+
+    @Test
+    public void givenCensusCSV_returnSortedInDensityFormat() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            censusAnalyser.loadIndiaCensusData(INDIA_CENSUS_CSV_FILE_PATH);
+            String list = censusAnalyser.getMostPopulatedState();
+            IndiaCensusCSV[] array = new Gson().fromJson(list,IndiaCensusCSV[].class);
+            Assert.assertEquals("Sikkim",array[28].state);
+        } catch (CensusAnalyserException e) {
+        }
+    }
 }

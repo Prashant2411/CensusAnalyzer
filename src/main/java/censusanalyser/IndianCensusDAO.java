@@ -16,4 +16,8 @@ public class IndianCensusDAO {
     public String getStateDAO() {
         return state;
     }
+
+    public int getPopulationDAO() {
+        return population;
+    }
 }
