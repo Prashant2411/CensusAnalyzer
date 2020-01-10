@@ -260,9 +260,9 @@ public class CensusAnalyserTest {
     public void givenGivenNull_ToStateCodeSorting_shouldReturnsException() {
         try {
             CensusAnalyser censusAnalyser = new CensusAnalyser();
-            int numOfRecords = censusAnalyser.loadIndiaCensusData(null);
             String list = censusAnalyser.getSortedStateCodeData();
         } catch (CensusAnalyserException e) {
+        //    Assert.assertEquals(CensusAnalyserException.ExceptionType.NULL_EXCEPTION,e.type);
         }
     }
 
@@ -270,9 +270,9 @@ public class CensusAnalyserTest {
     public void givenGivenNull_ToCensusDataSorting_shouldReturnsException() {
         try {
             CensusAnalyser censusAnalyser = new CensusAnalyser();
-            int numOfRecords = censusAnalyser.loadIndiaCensusData(null);
             String list = censusAnalyser.getSortedIndiaCensusData();
         } catch (CensusAnalyserException e) {
+            Assert.assertEquals(CensusAnalyserException.ExceptionType.NULL_EXCEPTION,e.type);
         }
 
     }

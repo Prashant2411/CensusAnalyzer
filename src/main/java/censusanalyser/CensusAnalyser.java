@@ -70,7 +70,7 @@ public class CensusAnalyser {
                 throw new CensusAnalyserException("Invalid File",
                         CensusAnalyserException.ExceptionType.NULL_EXCEPTION);
             censusList = censusList.stream().sorted(Comparator.comparing(IndianCensusDAO::getStateDAO)).collect(Collectors.toList());
-            String censusCodeJson = new Gson().toJson(censusList);
+            String censusCodeJson = new Gson().toJson(this.censusList);
             return censusCodeJson;
         } catch (IllegalStateException e) {
             throw new CensusAnalyserException(e.getMessage(),
