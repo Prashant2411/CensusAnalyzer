@@ -19,10 +19,14 @@ public class CensusAnalyser {
     List<IndiaCensusCSV> censusCSVList = null;
     List<CSVStatesDAO> stateCodeList = null; //For DAO-Data Access Object
     List<CSVStates> stateCSVList = null;
+    List<USCensusDAO> usCensusList = null; //For DAO-Data Access Object
+    List<USCensus> usCensusCSVList = null;
 
     public CensusAnalyser() {
         this.censusList = new ArrayList<IndianCensusDAO>();
         this.stateCodeList = new ArrayList<CSVStatesDAO>();
+        this.usCensusList = new ArrayList<USCensusDAO>();
+
     }
 
     public int loadIndiaCensusData(String csvFilePath) throws CensusAnalyserException {
@@ -151,5 +155,21 @@ public class CensusAnalyser {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT);
         }
+    }
+
+    public int loadUSCensusData(String csvFilePath) throws CensusAnalyserException {
+        try (Reader reader = newBufferedReader(Paths.get(csvFilePath))) {
+            ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
+            usCensusCSVList = csvBuilder.getCSVFileInList(reader, USCensus.class);
+            for (int i = 0; i < usCensusCSVList.size(); i++)
+                this.usCensusList.add(new USCensusDAO(usCensusCSVList.get(i)));
+            return usCensusList.size();
+        } catch (IOException e) {
+            throw new CensusAnalyserException(e.getMessage(),
+                    CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
+        } catch (CSVBuilderException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

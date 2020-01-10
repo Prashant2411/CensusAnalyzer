@@ -11,10 +11,13 @@ public class CensusAnalyserTest {
     private static final String WRONG_CSV_FILE_PATH = "./src/main/resources/IndiaStateCensusData.csv";
     private static final String INCORRECT_INDIA_CENSUS_CSV_FILE_PATH="./src/test/resources/IndiaStateCensusData";
     private static final String INCORRECT_FILE="./src/test/resources/IncorrectData.csv";
+
     private static final String INDIA_STATE_CODE = "./src/test/resources/IndiaStateCode.csv";
     private static final String WRONG_INDIA_STATE_CODE_PATH = "./src/test/resources/IndiaStateCode.csv";
     private static final String INCORRECT_INDIA_STATE_CODE = "./src/test/resources/IndiaStateCode";
     private static final String INCORRECT_STATE_CODE_FILE="./src/test/resources/IncorrectStateCode.csv";
+
+    private static final String US_CENSUS_DATA = "./src/test/resources/USCensusData.csv";
 
     @Test
     public void givenIndianCensusCSVFileReturnsCorrectRecords() {
@@ -350,6 +353,16 @@ public class CensusAnalyserTest {
             System.out.println(list);
             IndiaCensusCSV[] array = new Gson().fromJson(list,IndiaCensusCSV[].class);
             Assert.assertEquals("Goa",array[28].state);
+        } catch (CensusAnalyserException e) {
+        }
+    }
+
+    @Test
+    public void givenUSCensusCSVFileReturnsCorrectRecords() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            int numOfRecords = censusAnalyser.loadUSCensusData(US_CENSUS_DATA);
+            Assert.assertEquals(51,numOfRecords);
         } catch (CensusAnalyserException e) {
         }
     }
