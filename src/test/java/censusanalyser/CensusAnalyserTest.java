@@ -282,7 +282,7 @@ public class CensusAnalyserTest {
     }
 
     @Test
-    public void givenCensusCSV_returnSortedInPopulationFormat() {
+    public void givenCensusCSV_returnMostPopulated() {
         try {
             CensusAnalyser censusAnalyser = new CensusAnalyser();
             censusAnalyser.loadIndiaCensusData(INDIA_CENSUS_CSV_FILE_PATH);
@@ -294,13 +294,37 @@ public class CensusAnalyserTest {
     }
 
     @Test
-    public void givenCensusCSV_returnSortedInDensityFormat() {
+    public void givenCensusCSV_returnLeastPopulated() {
         try {
             CensusAnalyser censusAnalyser = new CensusAnalyser();
             censusAnalyser.loadIndiaCensusData(INDIA_CENSUS_CSV_FILE_PATH);
             String list = censusAnalyser.getMostPopulatedState();
             IndiaCensusCSV[] array = new Gson().fromJson(list,IndiaCensusCSV[].class);
             Assert.assertEquals("Sikkim",array[28].state);
+        } catch (CensusAnalyserException e) {
+        }
+    }
+
+    @Test
+    public void givenCensusCSV_returnMostDenselyPopulatedState() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            censusAnalyser.loadIndiaCensusData(INDIA_CENSUS_CSV_FILE_PATH);
+            String list = censusAnalyser.getDensityInSortedFormat();
+            IndiaCensusCSV[] array = new Gson().fromJson(list,IndiaCensusCSV[].class);
+            Assert.assertEquals("Bihar",array[0].state);
+        } catch (CensusAnalyserException e) {
+        }
+    }
+
+    @Test
+    public void givenCensusCSV_returnLeastDenselyPopulatedState() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            censusAnalyser.loadIndiaCensusData(INDIA_CENSUS_CSV_FILE_PATH);
+            String list = censusAnalyser.getDensityInSortedFormat();
+            IndiaCensusCSV[] array = new Gson().fromJson(list,IndiaCensusCSV[].class);
+            Assert.assertEquals("Arunachal Pradesh",array[28].state);
         } catch (CensusAnalyserException e) {
         }
     }

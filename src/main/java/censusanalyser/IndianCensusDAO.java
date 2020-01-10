@@ -20,4 +20,8 @@ public class IndianCensusDAO {
     public int getPopulationDAO() {
         return population;
     }
+
+    public int getDensityPerSqKmDAO() {
+        return densityPerSqKm;
+    }
 }

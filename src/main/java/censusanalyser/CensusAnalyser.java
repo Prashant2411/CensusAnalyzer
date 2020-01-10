@@ -118,4 +118,21 @@ public class CensusAnalyser {
                     CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT);
         }
     }
+
+    public String getDensityInSortedFormat() throws CensusAnalyserException {
+        try {
+            if(censusList.size()==0 || censusList == null)
+                throw new CensusAnalyserException("Invalid File",
+                        CensusAnalyserException.ExceptionType.NULL_EXCEPTION);
+            censusList = censusList.stream().sorted(Comparator.comparing(IndianCensusDAO::getDensityPerSqKmDAO).reversed()).collect(Collectors.toList());
+            String censusJson = new Gson().toJson(this.censusList);
+            return censusJson;
+        } catch (IllegalStateException e) {
+            throw new CensusAnalyserException(e.getMessage(),
+                    CensusAnalyserException.ExceptionType.UNABLE_TO_PARSE);
+        } catch (RuntimeException e) {
+            throw new CensusAnalyserException(e.getMessage(),
+                    CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT);
+        }
+    }
 }
