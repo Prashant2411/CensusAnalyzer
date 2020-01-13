@@ -1,5 +1,7 @@
 package censusanalyser;
 
+import java.util.List;
+
 public class CensusDataDAO {
     private int areaInSqkm;
     private String state;
