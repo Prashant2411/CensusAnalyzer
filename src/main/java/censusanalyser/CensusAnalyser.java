@@ -54,8 +54,9 @@ public class CensusAnalyser {
         try (Reader reader = newBufferedReader(Paths.get(csvFilePath))){
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
             stateCSVList = csvBuilder.getCSVFileInList(reader, CSVStates.class);
-            for (int i=0;i<stateCSVList.size();i++)
-                this.stateCodeList.add(new CSVStatesDAO(stateCSVList.get(i)));
+            stateCSVList.stream().filter(stateData -> stateCodeList.add(new CSVStatesDAO(stateData))).collect(Collectors.toList());
+//            for (int i=0;i<stateCSVList.size();i++)
+//                this.stateCodeList.add(new CSVStatesDAO(stateCSVList.get(i)));
             return stateCodeList.size();
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
