@@ -1,13 +1,7 @@
 package censusanalyser;
 
 import com.google.gson.Gson;
-import csvBuilder.CSVBuilderException;
-import csvBuilder.CSVBuilderFactory;
-import csvBuilder.ICSVBuilder;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,49 +9,42 @@ import static java.nio.file.Files.newBufferedReader;
 
 
 public class CensusAnalyser {
-    List<CensusDataDAO> censusList = new ArrayList<>(); //For DAO-Data Access Object
+    Map<String, CensusDataDAO> censusMap = new HashMap<>(); //For DAO-Data Access Object
 
-    List<CSVStatesDAO> stateCodeList = new ArrayList<CSVStatesDAO>(); //For DAO-Data Access Object
-    List<CSVStates> stateCSVList = null;
-
-    public int loadIndiaCensusData(String csvFilePath) throws CensusAnalyserException {
-        censusList = new CensusLoader().loadCensusData(csvFilePath, IndiaCensusCSV.class);
-        return censusList.size();
+    public enum Country{
+        INDIA, US
     }
 
-    public int loadUSCensusData(String csvFilePath) throws CensusAnalyserException {
-        censusList = new CensusLoader().loadCensusData(csvFilePath, USCensus.class);
-        return censusList.size();
-    }
-
-    public int loadIndiaStateCode(String csvFilePath) throws CensusAnalyserException {
-        try (Reader reader = newBufferedReader(Paths.get(csvFilePath))){
-            ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
-            stateCSVList = csvBuilder.getCSVFileInList(reader, CSVStates.class);
-            stateCSVList.stream().filter(stateData -> stateCodeList.add(new CSVStatesDAO(stateData))).collect(Collectors.toList());
-            return stateCodeList.size();
-        } catch (IOException e) {
-            throw new CensusAnalyserException(e.getMessage(),
-                    CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
-        } catch (IllegalStateException e) {
-            throw new CensusAnalyserException(e.getMessage(),
-                    CensusAnalyserException.ExceptionType.UNABLE_TO_PARSE);
-        } catch (RuntimeException e) {
-            throw new CensusAnalyserException(e.getMessage(),
-                    CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT);
-        } catch (CSVBuilderException e) {
-            throw new CensusAnalyserException(e.getMessage(),e.type.name());
+    public <E> int loadCensusData(Country country, String... csvFilePath) throws CensusAnalyserException {
+        if(country.equals(CensusAnalyser.Country.INDIA)){
+            return this.loadIndiaCensusData(IndiaCensusCSV.class, csvFilePath);
         }
+        else if(country.equals(CensusAnalyser.Country.US)) {
+            return this.loadUSCensusData(USCensus.class, csvFilePath[0]);
+        }
+        else {
+            throw new CensusAnalyserException("Invalid Country", CensusAnalyserException.ExceptionType.NO_SUCH_COUNTRY);
+        }
+    }
 
+    public int loadIndiaCensusData(Class csvClass, String... csvFilePath) throws CensusAnalyserException {
+        censusMap = new IndiaCensusAdapter().loadCensusData(csvClass, csvFilePath);
+        return censusMap.size();
+    }
+
+    public int loadUSCensusData(Class csvClass, String csvFilePath) throws CensusAnalyserException {
+        censusMap = new IndiaCensusAdapter().loadCensusData(csvClass, csvFilePath);
+        return censusMap.size();
     }
 
     public String getSortedIndiaCensusData() throws CensusAnalyserException {
         try {
-            if(censusList.size()==0 || censusList == null)
+            if(censusMap.size()==0 || censusMap == null)
                 throw new CensusAnalyserException("Invalid File",
                         CensusAnalyserException.ExceptionType.NULL_EXCEPTION);
-            censusList = censusList.stream().sorted(Comparator.comparing(CensusDataDAO::getStateDAO)).collect(Collectors.toList());
-            String censusCodeJson = new Gson().toJson(this.censusList);
+            List<CensusDataDAO> list = censusMap.values().stream().collect(Collectors.toList());
+            list = list.stream().sorted(Comparator.comparing(CensusDataDAO::getStateDAO)).collect(Collectors.toList());
+            String censusCodeJson = new Gson().toJson(list);
             return censusCodeJson;
         } catch (IllegalStateException e) {
             throw new CensusAnalyserException(e.getMessage(),
@@ -70,11 +57,12 @@ public class CensusAnalyser {
 
     public String getSortedStateCodeData() throws CensusAnalyserException {
         try {
-            if(stateCodeList.size()==0 || stateCodeList == null)
+            if(censusMap.size()==0 || censusMap == null)
                 throw new CensusAnalyserException("Invalid File",
                         CensusAnalyserException.ExceptionType.NULL_EXCEPTION);
-            stateCodeList = stateCodeList.stream().sorted(Comparator.comparing(CSVStatesDAO::getStateCodeDAO)).collect(Collectors.toList());
-            String stateCodeJson = new Gson().toJson(this.stateCodeList);
+            List<CensusDataDAO> list = censusMap.values().stream().collect(Collectors.toList());
+            list = list.stream().sorted(Comparator.comparing(CensusDataDAO::getStateIDDAO)).collect(Collectors.toList());
+            String stateCodeJson = new Gson().toJson(list);
             return stateCodeJson;
         } catch (IllegalStateException e) {
             throw new CensusAnalyserException(e.getMessage(),
@@ -87,11 +75,13 @@ public class CensusAnalyser {
 
     public String getMostPopulatedState() throws CensusAnalyserException {
         try {
-            if(censusList.size()==0 || censusList == null)
+            if(censusMap.size()==0 || censusMap == null)
                 throw new CensusAnalyserException("Invalid File",
                         CensusAnalyserException.ExceptionType.NULL_EXCEPTION);
-            censusList = censusList.stream().sorted(Comparator.comparing(CensusDataDAO::getPopulationDAO).reversed()).collect(Collectors.toList());
-            String censusJson = new Gson().toJson(this.censusList);
+            List<CensusDataDAO> list = censusMap.values().stream().collect(Collectors.toList());
+            list = list.stream().sorted(Comparator.comparing(CensusDataDAO::getPopulationDAO).reversed()).collect(Collectors.toList());
+            System.out.println(list);
+            String censusJson = new Gson().toJson(list);
             return censusJson;
         } catch (IllegalStateException e) {
             throw new CensusAnalyserException(e.getMessage(),
@@ -104,11 +94,12 @@ public class CensusAnalyser {
 
     public String getDensityInSortedFormat() throws CensusAnalyserException {
         try {
-            if(censusList.size()==0 || censusList == null)
+            if(censusMap.size()==0 || censusMap == null)
                 throw new CensusAnalyserException("Invalid File",
                         CensusAnalyserException.ExceptionType.NULL_EXCEPTION);
-            censusList = censusList.stream().sorted(Comparator.comparing(CensusDataDAO::getDensityPerSqKmDAO).reversed()).collect(Collectors.toList());
-            String censusJson = new Gson().toJson(this.censusList);
+            List<CensusDataDAO> list = censusMap.values().stream().collect(Collectors.toList());
+            list = list.stream().sorted(Comparator.comparing(CensusDataDAO::getDensityPerSqKmDAO).reversed()).collect(Collectors.toList());
+            String censusJson = new Gson().toJson(list);
             return censusJson;
         } catch (IllegalStateException e) {
             throw new CensusAnalyserException(e.getMessage(),
@@ -121,11 +112,12 @@ public class CensusAnalyser {
 
     public String getSortedAreaWise() throws CensusAnalyserException {
         try {
-            if(censusList.size()==0 || censusList == null)
+            if(censusMap.size()==0 || censusMap == null)
                 throw new CensusAnalyserException("Invalid File",
                         CensusAnalyserException.ExceptionType.NULL_EXCEPTION);
-            censusList = censusList.stream().sorted(Comparator.comparing(CensusDataDAO::getAreaInSqkmDAO).reversed()).collect(Collectors.toList());
-            String censusJson = new Gson().toJson(this.censusList);
+            List<CensusDataDAO> list = censusMap.values().stream().collect(Collectors.toList());
+            list = list.stream().sorted(Comparator.comparing(CensusDataDAO::getAreaInSqkmDAO).reversed()).collect(Collectors.toList());
+            String censusJson = new Gson().toJson(list);
             return censusJson;
         } catch (IllegalStateException e) {
             throw new CensusAnalyserException(e.getMessage(),
