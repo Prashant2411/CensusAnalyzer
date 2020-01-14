@@ -82,28 +82,28 @@ public class CensusAnalyserTest {
         }
     }
 
-//    @Test
-//    public void givenIndiaStateCode_WithWrongFile_ShouldThrowException() {
-//        try {
-//            CensusAnalyser censusAnalyser = new CensusAnalyser();
-//            ExpectedException exceptionRule = ExpectedException.none();
-//            exceptionRule.expect(CensusAnalyserException.class);
-//            censusAnalyser.loadIndiaStateCode(WRONG_INDIA_STATE_CODE_PATH);
-//        } catch (CensusAnalyserException e) {
-//            Assert.assertEquals(CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT,e.type);
-//        }
-//    }
-//
-//    @Test
-//    public void givenInvalidDelimiterInStateCode_shouldReturnsException() {
-//        try {
-//            CensusAnalyser censusAnalyser = new CensusAnalyser();
-//            censusAnalyser.loadIndiaStateCode(INCORRECT_STATE_CODE_FILE);
-//        } catch (CensusAnalyserException e) {
-//            Assert.assertEquals(CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT,e.type);
-//        }
-//    }
-//
+    @Test
+    public void givenIndiaStateCode_WithWrongFile_ShouldThrowException() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            ExpectedException exceptionRule = ExpectedException.none();
+            exceptionRule.expect(CensusAnalyserException.class);
+            censusAnalyser.loadCensusData(CensusAnalyser.Country.INDIA,INDIA_CENSUS_CSV_FILE_PATH,WRONG_INDIA_STATE_CODE_PATH);
+        } catch (CensusAnalyserException e) {
+            Assert.assertEquals(CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT,e.type);
+        }
+    }
+
+    @Test
+    public void givenInvalidDelimiterInStateCode_shouldReturnsException() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            censusAnalyser.loadCensusData(CensusAnalyser.Country.INDIA,INDIA_CENSUS_CSV_FILE_PATH,INCORRECT_STATE_CODE_FILE);
+        } catch (CensusAnalyserException e) {
+            Assert.assertEquals(CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT,e.type);
+        }
+    }
+
     @Test
     public void givenInvalidStateCodeFile_shouldReturnsException() {
         try {
@@ -167,7 +167,7 @@ public class CensusAnalyserTest {
     public void givenCSVState_shouldSort_returnsFirstElement() {
         try {
             CensusAnalyser censusAnalyser = new CensusAnalyser();
-            int numOfRecords = censusAnalyser.loadCensusData(CensusAnalyser.Country.INDIA,INDIA_CENSUS_CSV_FILE_PATH,INCORRECT_INDIA_STATE_CODE);
+            int numOfRecords = censusAnalyser.loadCensusData(CensusAnalyser.Country.INDIA,INDIA_CENSUS_CSV_FILE_PATH,INDIA_STATE_CODE);
             String list = censusAnalyser.getSortedStateCodeData();
             CensusDataDAO[] array = new Gson().fromJson(list,CensusDataDAO[].class);
             Assert.assertEquals("AP",array[0].State_Id);
@@ -222,61 +222,61 @@ public class CensusAnalyserTest {
         }
     }
 
-//    @Test
-//    public void givenIndiaStateCode_WithWrongFileToSorting_ShouldThrowException() {
-//        try {
-//            CensusAnalyser censusAnalyser = new CensusAnalyser();
-//            ExpectedException exceptionRule = ExpectedException.none();
-//            int numOfRecords = censusAnalyser.loadIndiaCensusData(INCORRECT_INDIA_STATE_CODE);
-//            exceptionRule.expect(CensusAnalyserException.class);
-//            censusAnalyser.getSortedStateCodeData();
-//        } catch (CensusAnalyserException e) {
-//            Assert.assertEquals(CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM,e.type);
-//        }
-//    }
-//
-//    @Test
-//    public void givenInvalidDelimiterInStateCode_ToSorting_shouldReturnsException() {
-//        try {
-//            CensusAnalyser censusAnalyser = new CensusAnalyser();
-//            int numOfRecords = censusAnalyser.loadIndiaCensusData(INCORRECT_STATE_CODE_FILE);
-//            censusAnalyser.getSortedStateCodeData();
-//        } catch (CensusAnalyserException e) {
-//            Assert.assertEquals(CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT,e.type);
-//        }
-//    }
-//
-//    @Test
-//    public void givenInvalidStateCodeFile_ToSorting_shouldReturnsException() {
-//        try {
-//            CensusAnalyser censusAnalyser = new CensusAnalyser();
-//            int numOfRecords = censusAnalyser.loadIndiaCensusData(INCORRECT_INDIA_STATE_CODE);
-//            censusAnalyser.getSortedStateCodeData();
-//        } catch (CensusAnalyserException e) {
-//            Assert.assertEquals(CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM,e.type);
-//        }
-//    }
-//
-//    @Test
-//    public void givenInvalidHeaderInStateCode_ToSorting_shouldReturnsException() {
-//        try {
-//            CensusAnalyser censusAnalyser = new CensusAnalyser();
-//            int numOfRecords = censusAnalyser.loadIndiaCensusData(INCORRECT_STATE_CODE_FILE);
-//            censusAnalyser.getSortedStateCodeData();
-//        } catch (CensusAnalyserException e) {
-//            Assert.assertEquals(CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT,e.type);
-//        }
-//    }
-//
-//    @Test
-//    public void givenGivenNull_ToStateCodeSorting_shouldReturnsException() {
-//        try {
-//            CensusAnalyser censusAnalyser = new CensusAnalyser();
-//            String list = censusAnalyser.getSortedStateCodeData();
-//        } catch (CensusAnalyserException e) {
-//            Assert.assertEquals(CensusAnalyserException.ExceptionType.NULL_EXCEPTION,e.type);
-//        }
-//    }
+    @Test
+    public void givenIndiaStateCode_WithWrongFileToSorting_ShouldThrowException() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            ExpectedException exceptionRule = ExpectedException.none();
+            int numOfRecords = censusAnalyser.loadCensusData(CensusAnalyser.Country.INDIA,INDIA_CENSUS_CSV_FILE_PATH,INCORRECT_INDIA_STATE_CODE);
+            exceptionRule.expect(CensusAnalyserException.class);
+            censusAnalyser.getSortedStateCodeData();
+        } catch (CensusAnalyserException e) {
+            Assert.assertEquals(CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM,e.type);
+        }
+    }
+
+    @Test
+    public void givenInvalidDelimiterInStateCode_ToSorting_shouldReturnsException() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            int numOfRecords = censusAnalyser.loadCensusData(CensusAnalyser.Country.INDIA,INDIA_CENSUS_CSV_FILE_PATH,INCORRECT_STATE_CODE_FILE);
+            censusAnalyser.getSortedStateCodeData();
+        } catch (CensusAnalyserException e) {
+            Assert.assertEquals(CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT,e.type);
+        }
+    }
+
+    @Test
+    public void givenInvalidStateCodeFile_ToSorting_shouldReturnsException() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            int numOfRecords = censusAnalyser.loadCensusData(CensusAnalyser.Country.INDIA,INDIA_CENSUS_CSV_FILE_PATH,INCORRECT_INDIA_STATE_CODE);
+            censusAnalyser.getSortedStateCodeData();
+        } catch (CensusAnalyserException e) {
+            Assert.assertEquals(CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM,e.type);
+        }
+    }
+
+    @Test
+    public void givenInvalidHeaderInStateCode_ToSorting_shouldReturnsException() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            int numOfRecords = censusAnalyser.loadCensusData(CensusAnalyser.Country.INDIA,INDIA_CENSUS_CSV_FILE_PATH,INCORRECT_STATE_CODE_FILE);
+            censusAnalyser.getSortedStateCodeData();
+        } catch (CensusAnalyserException e) {
+            Assert.assertEquals(CensusAnalyserException.ExceptionType.INVALID_FILE_DATA_FORMAT,e.type);
+        }
+    }
+
+    @Test
+    public void givenGivenNull_ToStateCodeSorting_shouldReturnsException() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            String list = censusAnalyser.getSortedStateCodeData();
+        } catch (CensusAnalyserException e) {
+            Assert.assertEquals(CensusAnalyserException.ExceptionType.NULL_EXCEPTION,e.type);
+        }
+    }
 
     @Test
     public void givenGivenNull_ToCensusDataSorting_shouldReturnsException() {
