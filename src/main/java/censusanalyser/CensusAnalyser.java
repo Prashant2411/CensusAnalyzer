@@ -15,25 +15,8 @@ public class CensusAnalyser {
         INDIA, US
     }
 
-    public <E> int loadCensusData(Country country, String... csvFilePath) throws CensusAnalyserException {
-        if(country.equals(CensusAnalyser.Country.INDIA)){
-            return this.loadIndiaCensusData(IndiaCensusCSV.class, csvFilePath);
-        }
-        else if(country.equals(CensusAnalyser.Country.US)) {
-            return this.loadUSCensusData(USCensus.class, csvFilePath[0]);
-        }
-        else {
-            throw new CensusAnalyserException("Invalid Country", CensusAnalyserException.ExceptionType.NO_SUCH_COUNTRY);
-        }
-    }
-
-    public int loadIndiaCensusData(Class csvClass, String... csvFilePath) throws CensusAnalyserException {
-        censusMap = new IndiaCensusAdapter().loadCensusData(csvClass, csvFilePath);
-        return censusMap.size();
-    }
-
-    public int loadUSCensusData(Class csvClass, String csvFilePath) throws CensusAnalyserException {
-        censusMap = new IndiaCensusAdapter().loadCensusData(csvClass, csvFilePath);
+    public int loadCensusData(Country country, String... csvFilePath) throws CensusAnalyserException {
+        censusMap = CensusAdapterFactory.getCensusData(country, csvFilePath);
         return censusMap.size();
     }
 

@@ -1,6 +1,6 @@
 package censusanalyser;
 
-public class CensusDataDAO implements Comparable<CensusDataDAO> {
+public class CensusDataDAO {
     private int areaInSqkm;
     private String state;
     private int population;
@@ -44,11 +44,6 @@ public class CensusDataDAO implements Comparable<CensusDataDAO> {
 
     public int getAreaInSqkmDAO() {
         return areaInSqkm;
-    }
-
-    @Override
-    public int compareTo(CensusDataDAO censusDataDAO) {
-        return 0;
     }
 
     public String getStateIDDAO() {
