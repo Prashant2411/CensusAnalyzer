@@ -18,7 +18,8 @@ public abstract class CensusAdapter {
     public abstract <E> Map<String, CensusDataDAO> loadCensusData(String... csvFilePath) throws CensusAnalyserException;
 
     Map<String, CensusDataDAO> censusMap = new HashMap<>();
-    public <E> Map<String,CensusDataDAO> loadCensusData(Class csvClass, String csvFilePath) throws CensusAnalyserException {
+
+    public  <E> Map<String,CensusDataDAO> loadCensusData(Class<E> csvClass, String csvFilePath) throws CensusAnalyserException {
         try (Reader reader = newBufferedReader(Paths.get(String.valueOf(csvFilePath)))) {
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
             List<E> censusCSVDataList = csvBuilder.getCSVFileInList(reader, csvClass);
@@ -29,7 +30,7 @@ public abstract class CensusAdapter {
             } else if (csvClass.getName().equals("censusanalyser.USCensus")) {
                 StreamSupport.stream(censusCSVDataList.spliterator(), false)
                         .map(USCensus.class::cast)
-                        .forEach(censusData -> censusMap.put(censusData.State, new CensusDataDAO(censusData)));
+                        .forEach(censusData -> censusMap.put(censusData.State_Id, new CensusDataDAO(censusData)));
             }
             return censusMap;
         } catch (IOException e) {

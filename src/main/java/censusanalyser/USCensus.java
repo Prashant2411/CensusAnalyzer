@@ -29,4 +29,15 @@ public class USCensus {
 
     @CsvBindByName(column = "Housing_Density", required = true)
     public double Housing_Density;
+
+    public USCensus(String state, String state_id, int population, double densityPerSqKm, double areaInSqkm) {
+        this.State=state;
+        this.State_Id=state_id;
+        this.Population=population;
+        this.Population_Density=densityPerSqKm;
+        this.Total_area=areaInSqkm;
+    }
+
+    public USCensus() {
+    }
 }
